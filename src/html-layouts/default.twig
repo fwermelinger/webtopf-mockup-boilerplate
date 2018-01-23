@@ -1,0 +1,38 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="styles/bootstrap.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <script type="text/javascript" src="scripts/jquerybundle.min.js"></script>
+    <script type="text/javascript" src="scripts/vendorbundle.min.js"></script>
+    <script type="text/javascript" src="scripts/myproject.min.js"></script>
+
+
+    <!-- <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet"> -->
+
+</head>
+<body>
+<div class="main-container">
+
+    {% block header %}{% endblock %}
+
+    <div class="main-columns content">
+        <div class="right-column"></div>
+        <div class="left-column"></div>
+        <div class="middle-column">
+            <div class="middle-column-inner">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    {% block footer %}{% endblock %}
+
+    
+
+</div>
+</body>
+</html>

@@ -9,11 +9,14 @@
     var del = require('del');
     var concat = require('gulp-concat');
     var autoprefixer = require('gulp-autoprefixer');
+    var twig = require('gulp-twig');
+    var zip = require('gulp-zip');
 
     var path = {
         source: 'src/',
         dest: 'dist/'
     };
+    var projectname = 'myproject';
 
     gulp.task('images', function () {
         //this image task does not minimize images. (minimizing takes too long to run every time for development)
@@ -27,20 +30,26 @@
             .pipe(gulp.dest(path.dest + 'fonts/'));
     });
 
-
     gulp.task('scripts', function () {
         gulp.src(path.source + 'scripts/jquery/*.js')
             .pipe(sourcemaps.init())
             .pipe(concat('jquerybundle.min.js'))
-            .pipe(sourcemaps.write())
             .pipe(uglify())
+            .pipe(sourcemaps.write('jquery'))
             .pipe(gulp.dest(path.dest + 'scripts'));
 
         gulp.src(path.source + 'scripts/vendors/*.js')
             .pipe(sourcemaps.init())
             .pipe(concat('vendorbundle.min.js'))
-            .pipe(sourcemaps.write())
             .pipe(uglify())
+            .pipe(sourcemaps.write('vendor'))
+            .pipe(gulp.dest(path.dest + 'scripts'));
+
+        gulp.src(path.source + 'scripts/*.js')
+            .pipe(sourcemaps.init())
+            .pipe(concat(projectname + '.min.js'))
+            .pipe(uglify())
+            .pipe(sourcemaps.write(projectname))
             .pipe(gulp.dest(path.dest + 'scripts'));
 
     });
@@ -58,17 +67,25 @@
             .pipe(browserSync.stream({match: '**/*.css'}));
     });
 
+    gulp.task('zip', function () {
+        gulp.src(path.dest + '**')
+            .pipe(zip('release.zip'))
+            .pipe(gulp.dest('./'))
+    });
+
     gulp.task('html', function () {
-        gulp.src('**.html')
-            .pipe(browserSync.stream());
+        gulp.src(path.source + '*.twig')
+            .pipe(twig())
+            .pipe(gulp.dest(path.dest))
+            .pipe(browserSync.stream({match: "**/*.html"}));
     });
 
     gulp.task('watch', function () {
         browserSync.init({
-            server: '.'
+            server: './dist'
         });
 
-        gulp.watch('**.html', ['html']);
+        gulp.watch(path.source + '**/*.twig', ['html']);
         gulp.watch(path.source + 'styles/**', ['styles']);
         gulp.watch(path.source + 'images/*', ['images']);
         gulp.watch(path.source + 'scripts/**', ['scripts']);
@@ -76,8 +93,8 @@
 
     gulp.task('clean', del.bind(null, [path.dest]));
 
-    gulp.task('build', function () {
-        gulp.start(['html', 'styles', 'fonts', 'scripts', 'images']);
+    gulp.task('build', ['html', 'styles', 'fonts', 'scripts', 'images'], function () {
+        gulp.start('zip');
     });
 
     gulp.task('default', ['clean'], function () {
