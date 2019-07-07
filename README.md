@@ -1,5 +1,5 @@
 # webtopf-mockup-boilerplate
-A boilerplate repository for quickly getting started creating html and css mockups. Uses jQuery, Bootstrap, SASS and Gulp. 
+A boilerplate repository for quickly getting started creating html and css mockups. Uses jQuery and Bootstrap. Supports SASS and twig files to be built with Gulp. 
 
 ## Get started
 run `npm install` to install all dependencies
